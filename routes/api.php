@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,4 +24,15 @@ Route::controller(TagController::class)->middleware('auth:sanctum')->group(funct
     Route::get('/tag/{id}', 'show');
     Route::put('/tags/{id}', 'update');
     Route::delete('/tags/{id}', 'destroy');
+});
+
+
+Route::controller(PostController::class)->middleware('auth:sanctum')->group(function () {
+    Route::get('/posts','index');
+    Route::post('/posts', 'store');
+    Route::get('/posts/{id}', 'show');
+    Route::put('/posts/{id}', 'update');
+    Route::delete('/posts/{id}', 'destroy');
+    Route::get('/test', 'trashed');
+    Route::post('/posts/restore/{id}', 'restore'); // Restore deleted post
 });

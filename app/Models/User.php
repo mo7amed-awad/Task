@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -46,4 +45,17 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function tags()
+    {
+        return $this->hasManyThrough(Tag::class, Post::class);
+    }
 }
+
+
