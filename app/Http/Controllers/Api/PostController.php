@@ -136,9 +136,15 @@ class PostController extends Controller
     // Restore a soft deleted post
     public function restore($id)
     {
-        $post = Post::onlyTrashed()->where('user_id', Auth::id())->findOrFail($id);
+        $post = Post::onlyTrashed()->where('user_id', Auth::id())->where('id', $id)->first();
+    
+        if (!$post) {
+            return ApiResponse::sendResponse(404, "Post Not Found", []);
+        }
+    
         $post->restore();
-        return new PostResource($post);
+    
+        return ApiResponse::sendResponse(200, "Post Restored Successfully", new PostResource($post));
     }
 
     protected function uploadimage(Request $request)
