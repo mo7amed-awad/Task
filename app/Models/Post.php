@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 class Post extends Model
 {
@@ -20,4 +21,15 @@ class Post extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    protected static function booted()
+{
+    static::saved(function () {
+        Cache::forget('stats');
+    });
+
+    static::deleted(function () {
+        Cache::forget('stats');
+    });
+}
 }

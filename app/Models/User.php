@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -55,6 +56,17 @@ class User extends Authenticatable
     public function tags()
     {
         return $this->hasManyThrough(Tag::class, Post::class);
+    }
+
+    protected static function booted()
+    {
+        static::saved(function () {
+            Cache::forget('stats');
+        });
+    
+        static::deleted(function () {
+            Cache::forget('stats');
+        });
     }
 }
 

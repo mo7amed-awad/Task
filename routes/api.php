@@ -3,8 +3,10 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\StatsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -37,3 +39,5 @@ Route::controller(PostController::class)->middleware('auth:sanctum')->group(func
     Route::get('/test', 'trashed');
     Route::post('/posts/restore/{id}', 'restore'); // Restore deleted post
 });
+
+Route::get('/stats', [StatsController::class, 'index']);
