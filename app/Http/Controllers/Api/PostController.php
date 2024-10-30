@@ -46,7 +46,7 @@ class PostController extends Controller
         if ($validator->fails()) {
             return ApiResponse::sendResponse(422, "Validation Errors", $validator->messages()->all());
         }
-        $data['user_id']=auth()->id();
+        $data['user_id']=$request->user()->id();
         $post = Post::create($data);
         if ($request->tags) {
             $post->tags()->attach($request->tags);
@@ -71,6 +71,9 @@ class PostController extends Controller
     {
         $post = Post::where('user_id', Auth::id())->findOrFail($id);
         
+        if($post->user_id != $request->user()->id){
+            return ApiResponse::sendResponse(403, "You aren't allowed to take this action",[]);
+        }
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'body' => 'required|string',
@@ -102,7 +105,7 @@ class PostController extends Controller
         }
 
         if ($updated) {
-            return ApiResponse::sendResponse(201, "Post Updated Successfully", new PostResource($post));
+            return ApiResponse::sendResponse(201, "Post Updated Successfully", new PostResource($updated));
         } else {
             return ApiResponse::sendResponse(404, "Error in update Post", []);
         }        
